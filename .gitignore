@@ -1,0 +1,14 @@
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea
+*/checkpoint
+
+# Maven
+**/target/
+**/logs/
+*.versionsBackup
+.flattened-pom.xml
+**/scalastyle-output.xml
+dependency-reduced-pom.xml
