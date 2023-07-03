@@ -38,9 +38,26 @@ public class BasePluginTest {
             }
         };
 
-        plugin.startProfiler("Sample-Spark-App-Beta", true);
+        plugin.startProfiler("Sample-Spark-App-Beta", true, 1.0);
         verify(profiler, times(1)).start();
         Assertions.assertEquals(profiler, plugin._profiler);
+    }
+
+    @Test
+    public void testStartProfilerZeroProbability() {
+        Profiler profiler = mock(Profiler.class);
+        when(profiler.isRunning()).thenReturn(true);
+
+        BasePlugin plugin = new BasePlugin() {
+            @Override
+            public Profiler createProfiler(String profilingGroupName, boolean heapSummaryEnabled) {
+                return profiler;
+            }
+        };
+
+        plugin.startProfiler("Sample-Spark-App-Beta", true, 0.00);
+        verify(profiler, times(0)).start();
+        Assertions.assertNull(plugin._profiler);
     }
 
     @Test

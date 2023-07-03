@@ -49,4 +49,29 @@ public class ProfilingContextTest {
         Assertions.assertTrue(context.isHeapSummaryEnabled());
     }
 
+    @Test
+    public void testDefaultProfilingGroupProbability() {
+        ProfilingContext context = ProfilingContext.builder()
+                                                   .build();
+
+        Assertions.assertEquals(1.00, context.getProbability());
+    }
+
+    @Test
+    public void testProfilingGroupProbabilitySet() {
+        ProfilingContext context = ProfilingContext.builder()
+                                                   .probability(0.05)
+                                                   .build();
+
+        Assertions.assertEquals(0.05, context.getProbability());
+    }
+
+    @Test
+    public void testProfilingGroupProbabilityOutsideNorm() {
+        ProfilingContext context = ProfilingContext.builder()
+                                                   .probability(15.12)
+                                                   .build();
+        Assertions.assertEquals(15.12, context.getProbability());
+    }
+
 }

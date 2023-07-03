@@ -15,8 +15,10 @@
 package software.amazon.profiler;
 
 import java.io.IOException;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +40,15 @@ public class BasePlugin {
     // One profiler per JVM process
     transient volatile Profiler _profiler;
 
-    public synchronized void startProfiler(String profilingGroupName, boolean heapSummaryEnabled) {
+    private final static Random random = ThreadLocalRandom.current();
+
+    public synchronized void startProfiler(String profilingGroupName, boolean heapSummaryEnabled, double probability) {
         Profiler profiler = _profiler;
         if (profiler == null) {
+            if (random.nextDouble() > probability) {
+                log.info("Profiler is not being started for this executor. Probability {}.", probability);
+                return;
+            }
             profiler = createProfiler(profilingGroupName, heapSummaryEnabled);
             log.info("Profiling is being started");
             profiler.start();
