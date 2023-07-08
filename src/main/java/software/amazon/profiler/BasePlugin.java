@@ -45,7 +45,7 @@ public class BasePlugin {
     public synchronized void startProfiler(String profilingGroupName, boolean heapSummaryEnabled, double probability) {
         Profiler profiler = _profiler;
         if (profiler == null) {
-            if (random.nextDouble() > probability) {
+            if (random.nextDouble() >= probability) {
                 log.info("Profiler is not being started for this executor. Probability {}.", probability);
                 return;
             }
