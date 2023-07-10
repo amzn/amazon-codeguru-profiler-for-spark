@@ -39,7 +39,7 @@ public class SparkDriverPlugin extends BasePlugin implements DriverPlugin {
                 ProfilingContext context = getContext();
                 if (context != null && context.isDriverEnabled()) {
                     log.info("Profiling context: " + context);
-                    startProfiler(context.getProfilingGroupName(), context.isHeapSummaryEnabled());
+                    startProfiler(context.getProfilingGroupName(), context.isHeapSummaryEnabled(), 1.00);
                 }
             } catch (IOException | RuntimeException e) {
                 log.warn("Failed to start profiling in driver", e);

@@ -37,7 +37,7 @@ public class SparkExecutorPlugin extends BasePlugin implements ExecutorPlugin {
                 ProfilingContext context = getContext();
                 if (context != null && context.isExecutorEnabled()) {
                     log.info("Profiling context: " + context);
-                    startProfiler(context.getProfilingGroupName(), context.isHeapSummaryEnabled());
+                    startProfiler(context.getProfilingGroupName(), context.isHeapSummaryEnabled(), context.getProbability());
                 }
             } catch (IOException | RuntimeException e) {
                 log.warn("Failed to start profiling in executor", e);

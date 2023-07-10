@@ -42,6 +42,9 @@ public final class ProfilingContext {
     @Builder.Default
     boolean heapSummaryEnabled = true;
 
+    @Builder.Default
+    double probability = 1.00;
+
     @JsonPOJOBuilder(withPrefix = "")
     public static final class ProfilingContextBuilder {
         // This method declaration is needed only for the JSON annotation
