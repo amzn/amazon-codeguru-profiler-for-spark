@@ -22,7 +22,9 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.spark.SparkConf;
 import software.amazon.codeguruprofilerjavaagent.Profiler;
+import software.amazon.profiler.utils.SparkConfUtils;
 
 /**
  * A base class interacts with AWS CodeGuru to start and stop profiling.
@@ -72,10 +74,10 @@ public class BasePlugin {
             .build();
     }
 
-    public ProfilingContext getContext() throws IOException {
-        if ("true".equals(System.getenv("ENABLE_AMAZON_PROFILER"))) {
+    public ProfilingContext getContext(SparkConf conf, boolean isDriver) throws IOException {
+        if ("true".equals(SparkConfUtils.getValueFromEnvOrSparkConf(conf, isDriver, "ENABLE_AMAZON_PROFILER"))) {
             log.info("Profiling is enabled");
-            String json = System.getenv("PROFILING_CONTEXT");
+            String json = SparkConfUtils.getValueFromEnvOrSparkConf(conf, isDriver, "PROFILING_CONTEXT");
             if (json != null) {
                 return new ObjectMapper().readValue(json, ProfilingContext.class);
             }

@@ -36,7 +36,7 @@ public class SparkDriverPlugin extends BasePlugin implements DriverPlugin {
     public Map<String, String> init(SparkContext sc, PluginContext pluginContext) {
         SERVICE.submit(() -> {
             try {
-                ProfilingContext context = getContext();
+                ProfilingContext context = getContext(pluginContext.conf(), true);
                 if (context != null && context.isDriverEnabled()) {
                     log.info("Profiling context: " + context);
                     startProfiler(context.getProfilingGroupName(), context.isHeapSummaryEnabled(), 1.00);
