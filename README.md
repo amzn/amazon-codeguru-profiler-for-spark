@@ -26,7 +26,7 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## Onboarding Steps
 
-- Create a profiling group in CodeGuru Profiler and grant permission to your EMR EC2 role so that profiler agents can emit metrics to CodeGuru.  Detailed instructions can be found [here](https://docs.aws.amazon.com/codeguru/latest/profiler-ug/setting-up-long.html).
+- Create a profiling group in CodeGuru Profiler and grant permission to your EMR EC2 role or AWS Glue Job role so that profiler agents can emit metrics to CodeGuru.  Detailed instructions can be found [here](https://docs.aws.amazon.com/codeguru/latest/profiler-ug/setting-up-long.html).
 
 ![](resources/images/profiling-group.gif)
 
