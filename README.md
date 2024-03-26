@@ -14,17 +14,25 @@ See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more inform
 
 ## Prerequisites
 
+- Your app is built and run against Spark 3.x
+
+### Spark on EMR
+
 - To leverage any Spark plugin, your EMR cluster needs to be run on release 6.x or newer, and `spark.plugins` needs to be specified when a Spark job is submitted.
 
-- Your app is built and run against Spark 3.x
+### Spark on AWS Glue
+
+- To leverage any Spark plugin, you should be on AWS Glue 3 or Newer, and `spark.plugins` needs to be specified when Glue job is submitted.
 
 ## Onboarding Steps
 
-1. Create a profiling group in CodeGuru Profiler and grant permission to your EMR EC2 role so that profiler agents can emit metrics to CodeGuru.  Detailed instructions can be found [here](https://docs.aws.amazon.com/codeguru/latest/profiler-ug/setting-up-long.html).
+- Create a profiling group in CodeGuru Profiler and grant permission to your EMR EC2 role or AWS Glue Job role so that profiler agents can emit metrics to CodeGuru.  Detailed instructions can be found [here](https://docs.aws.amazon.com/codeguru/latest/profiler-ug/setting-up-long.html).
 
 ![](resources/images/profiling-group.gif)
 
-2. Reference `codeguru-profiler-for-spark` via `--packages` (or `--jars`) when submitting your Spark job, along with `PROFILING_CONTEXT` and `ENABLE_AMAZON_PROFILER` defined. Below is an example where the profling group created in the previous step is assumed to be `CodeGuru-Spark-Demo`.
+### Spark on EMR
+
+- Reference `codeguru-profiler-for-spark` via `--packages` (or `--jars`) when submitting your Spark job, along with `PROFILING_CONTEXT` and `ENABLE_AMAZON_PROFILER` defined. Below is an example where the profling group created in the previous step is assumed to be `CodeGuru-Spark-Demo`.
 
 ```
 spark-submit \
@@ -41,7 +49,7 @@ spark-submit \
 <the-s3-object-key-of-your-spark-app-jar>
 ```
 
-An alternative way to specify `PROFILING_CONTEXT` and `ENABLE_AMAZON_PROFILER` is via the AWS EMR web console.  Go to the Configurations tab of your EMR cluster and configure both environment variables under the `yarn-env.export` classification for instance groups.  Please note that `PROFILING_CONTEXT`, if configured in the web console, needs to escape all the commas on top of what's for the above spark-submit command.
+- An alternative way to specify `PROFILING_CONTEXT` and `ENABLE_AMAZON_PROFILER` is via the AWS EMR web console.  Go to the Configurations tab of your EMR cluster and configure both environment variables under the `yarn-env.export` classification for instance groups.  Please note that `PROFILING_CONTEXT`, if configured in the web console, needs to escape all the commas on top of what's for the above spark-submit command.
 ```json
 [{
   "classification": "yarn-env",
@@ -57,7 +65,20 @@ An alternative way to specify `PROFILING_CONTEXT` and `ENABLE_AMAZON_PROFILER` i
 }]
 ```
 
+### Spark on AWS Glue
+
+- Upload `codeguru-profiler-for-apache-spark.jar` to S3 and add the jar s3 path through `--extra-jars` parameter when using AWS Glue API. More details on AWS Glue API can be found [here](https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html#w6aac28c11b8c11).
+- Then, you need to specify the `PROFILING_CONTEXT` and `ENABLE_AMAZON_PROFILER` properties through `--conf` parameter when using AWS Glue API. A Sample value for `--conf` parameter would look like below:  
+  `spark.plugins=software.amazon.profiler.AmazonProfilerPlugin --conf spark.executorEnv.ENABLE_AMAZON_PROFILER=true --conf spark.executorEnv.PROFILING_CONTEXT={"profilingGroupName":"CodeGuru-Spark-Demo"} --conf spark.yarn.appMasterEnv.ENABLE_AMAZON_PROFILER=true --conf spark.yarn.appMasterEnv.PROFILING_CONTEXT={"profilingGroupName":"CodeGuru-Spark-Demo", "driverEnabled": "true"}`.  
+
+***Note:*** AWS Glue doesn't support passing multiple `--conf` parameters, so when you're passing more than one `--conf` parameters such as `--conf k1=v1 --conf k2=v2`, The key and value for Glue API would look like below:   
+  *Key:* `--conf`  
+  *Value:* `k1=v1 --conf k2=v2`
+
+
 ## Troubleshooting Tips
+
+### Spark on EMR
 
 If profiling results do not show up in the CodeGuru web console of your AWS account, you can fire off a Spark shell from the master node of your EMR cluster and then check if your environment variables are correctly set up.  For example,
 

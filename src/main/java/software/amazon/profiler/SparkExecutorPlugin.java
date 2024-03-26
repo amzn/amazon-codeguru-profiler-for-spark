@@ -34,7 +34,7 @@ public class SparkExecutorPlugin extends BasePlugin implements ExecutorPlugin {
     public void init(PluginContext ctx, Map<String, String> extraConf) {
         SERVICE.submit(() -> {
             try {
-                ProfilingContext context = getContext();
+                ProfilingContext context = getContext(ctx.conf(), false);
                 if (context != null && context.isExecutorEnabled()) {
                     log.info("Profiling context: " + context);
                     startProfiler(context.getProfilingGroupName(), context.isHeapSummaryEnabled(), context.getProbability());
